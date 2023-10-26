@@ -1,5 +1,5 @@
 # Immutable-passport
-Certainly, here's a complete guide for integrating Immutable Passport into an application, including the necessary code examples. Please note that I cannot create an actual GitHub repository, but you can use this guide to create your repository and upload it to GitHub.
+Certainly, here's a complete guide for integrating Immutable Passport into an application, including the necessary code examples.
 
 ---
 
