@@ -97,8 +97,4 @@ passport.initiateTransaction({ data: 'Your transaction data' }).then((transactio
 ## 9. Conclusion
 You've successfully integrated Immutable Passport into your application. You can explore additional features and customize your application further using the Immutable Passport documentation.
 
-For a fully detailed guide and a sample React application demonstrating the integration, please visit my GitHub repository: [Your GitHub Repository Link](https://github.com/your-username/your-repo).
-
----
-
-You can copy this markdown into a `README.md` file in your GitHub repository and replace the placeholders with actual content and code samples.
+For a fully detailed guide and a sample React application demonstrating the integration, take a look of source files in the repository.
