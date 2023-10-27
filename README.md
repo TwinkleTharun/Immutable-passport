@@ -51,61 +51,93 @@ npm install -D @imtbl/sdk
 ```
 
 ###Initialise Passport
-Next, we'll need to initialise the Passport client. The Passport constructor accepts a PassportModuleConfiguration object, which has the following interface:
+Next, we'll need to initialise the Passport client. The Passport constructor accepts a PassportModuleConfiguration object, which will be like following sample code snippet:
 
 ```javascript
-interface PassportModuleConfiguration {
-  baseConfig: ImmutableConfiguration;
-  clientId: string;
-  logoutRedirectUri: string;
-  logoutMode?: 'redirect' | 'silent'; // defaults to 'redirect'
-  redirectUri: string;
-  scope?: string;
-  audience?: string;
-}
+import { config, passport } from "@imtbl/sdk";
+import { ethers } from "ethers";
+
+const passportConfig = {
+  clientId: process.env.IMMUTABLE_CLIENT_ID as string,
+  redirectUri: "http://localhost:3000/callback",
+  logoutRedirectUri: "http://localhost:3000/",
+  scope: "transact openid offline_access email",
+  audience: "platform_api",
+  baseConfig: new config.ImmutableConfiguration({
+    environment: config.Environment.SANDBOX, // Set the appropriate environment value
+    apiKey: "", // Provide the apiKey if required
+  }),
+};
+const passportInstance = new passport.Passport(passportConfig);
+const passportProvider = passportInstance.connectEvm();
 ```
 
 ## 5. Logging in a User with Passport
-Create a login button in your application. When the user clicks it, use the `passport.login()` method to initiate the Passport authentication flow:
+To log in a user, use the following sample code:
 
 ```javascript
-passport.login().then((result) => {
-  if (result) {
-    // User is logged in, you can perform actions here.
+import { passportProvider, fetchAuth } from "@/lib/immutable";
+
+const fetchAuth = async () => {
+  try {
+    const accounts = await passportProvider.request({
+      method: "eth_requestAccounts",
+    });
+    console.log("Connected");
+    console.log(accounts);
+  } catch (error) {
+    console.log(error);
   }
-});
+};
 ```
 
 ## 6. Displaying User Information
-After successful login, you can access user information like the ID token, access token, and nickname:
+After successful login, you can access user information like the ID token, access token. Have a look on sample code:
 
 ```javascript
-const idToken = passport.getIdToken();
-const accessToken = passport.getAccessToken();
-const nickname = passport.getNickname();
+import { passportInstance } from "@/lib/immutable";
 
-console.log('ID Token:', idToken);
-console.log('Access Token:', accessToken);
-console.log('Nickname:', nickname);
+const fetchUser = async () => {
+  try {
+    const userProfile = await passportInstance.getUserInfo();
+    const accessToken = await passportInstance.getAccessToken();
+    const idToken = await passportInstance.getIdToken();
+
+    // Display user information on your app
+  } catch (error) {
+    console.log(error);
+  }
+};
 ```
 
 ## 7. Logging Out a User
-To log out a user, simply call the `passport.logout()` method:
+To log out a user, simply use the following code:
 
 ```javascript
-passport.logout();
+import { passportInstance } from "@/lib/immutable";
+
+const handleLogout = () => {
+  passportInstance.logout();
+};
 ```
 
 ## 8. Initiating a Transaction from Passport
-To initiate a blockchain transaction, use the Passport client's `initiateTransaction()` method:
+To initiate a blockchain transaction, use the Passport client's transaction data as per following code:
 
 ```javascript
-passport.initiateTransaction({ data: 'Your transaction data' }).then((transactionHash) => {
-  console.log('Transaction Hash:', transactionHash);
-});
+import { passportProvider, initiateTransaction } from "@/lib/immutable";
+
+const handleTransaction = async (data) => {
+  try {
+    const transactionHash = await initiateTransaction({ data });
+    // Handle the transaction response
+  } catch (error) {
+    console.error(error);
+  }
+};
 ```
 
 ## 9. Conclusion
 You've successfully integrated Immutable Passport into your application. You can explore additional features and customize your application further using the Immutable Passport documentation.
 
-For a fully detailed guide and a sample React application demonstrating the integration, take a look of source files in the repository.
+For a fully detailed guide, simply visit: https://docs.immutable.com/docs/zkEVM/products/passport
