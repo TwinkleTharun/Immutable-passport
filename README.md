@@ -31,27 +31,38 @@ You can start by creating a basic application using your preferred framework (e.
 ```bash
 npx create-react-app passport-demo
 cd passport-demo
-npm start
 ```
 
 ## 3. Registering the Application on Immutable Developer Hub
-Go to the Immutable Developer Hub and create a new application. This will provide you with the necessary client ID and client secret for Passport integration.
+Go to the Immutable Developer Hub and create a new client and necessary details. This will provide you with the necessary client ID and client secret for Passport integration.
+###Things to note when adding a client in the Developer Hub
+There are a few crucial details that must be provided when adding a client:
+Application Type: The type of your application. At the moment only the Web Application option is available. A Native option for mobile or desktop applications is coming soon.
+Client name: The name you wish to use to identify your application.
+Logout URLs: The URL that your users will be redirected to upon logging out of your application.
+Callback URLs: The URL that your users will be redirected to once the authentication is complete. This is also where your application process the authentication response.
+Web Origins URLs: The URLs that are allowed to request authorisation. This field is available when you select the Native application type.
 
 ## 4. Installing and Initializing the Passport Client
-In your React application, install the Immutable Passport client:
-
+###Install the Immutable SDK
+Run the following command in your project root directory.
 ```bash
-npm install immutable-passport-client
+npm install -D @imtbl/sdk
 ```
 
-In your app, initialize the client with the client ID obtained from the Developer Hub:
+###Initialise Passport
+Next, we'll need to initialise the Passport client. The Passport constructor accepts a PassportModuleConfiguration object, which has the following interface:
 
 ```javascript
-import { Passport } from 'immutable-passport-client';
-
-const passport = new Passport({
-  clientId: 'your-client-id',
-});
+interface PassportModuleConfiguration {
+  baseConfig: ImmutableConfiguration;
+  clientId: string;
+  logoutRedirectUri: string;
+  logoutMode?: 'redirect' | 'silent'; // defaults to 'redirect'
+  redirectUri: string;
+  scope?: string;
+  audience?: string;
+}
 ```
 
 ## 5. Logging in a User with Passport
